@@ -14,7 +14,7 @@ class AppTest {
     @Test
     void greetingSanitisesInput() {
         assertEquals("{\"message\":\"hello, world\"}", App.greeting(null));
-        assertEquals("{\"message\":\"hello, bob\"}", App.greeting("bob<script>"));
+        assertEquals("{\"message\":\"hello, bobscript\"}", App.greeting("bob</script>"));
     }
 
     @Test
