@@ -104,7 +104,7 @@ exceptions:
         assertTrue(ranCommand('sh reports/gitops-promote.sh'))
         assertTrue(written['reports/gitops-promote.sh'].contains('credential.helper'))
         def withEnv = helper.callStack.find { it.methodName == 'withEnv' }
-        List envs = withEnv.args[0] as List
+        List<String> envs = (withEnv.args[0] as List)*.toString()
         assertTrue(envs.contains('OPEN_PR=true'))
         assertTrue(envs.contains('YAML_PATH=.api.image.tag'))
     }
