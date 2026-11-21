@@ -1,6 +1,7 @@
 # devsecops-pipeline-template
 
 [![ci](https://github.com/pratheek888/devsecops-pipeline-template/actions/workflows/ci.yaml/badge.svg)](https://github.com/pratheek888/devsecops-pipeline-template/actions/workflows/ci.yaml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/pratheek888/devsecops-pipeline-template/badge)](https://scorecard.dev/viewer/?uri=github.com/pratheek888/devsecops-pipeline-template)
 ![Jenkins](https://img.shields.io/badge/Jenkins-shared%20library-D24939?logo=jenkins&logoColor=white)
 ![Gitleaks](https://img.shields.io/badge/secrets-Gitleaks-333)
 ![SonarQube](https://img.shields.io/badge/SAST-SonarQube-4E9BCD?logo=sonarqube&logoColor=white)

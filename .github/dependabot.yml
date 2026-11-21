@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      actions: { patterns: ["*"] }
+  - package-ecosystem: gradle
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      gradle: { patterns: ["*"] }
+    ignore:
+      # Jenkins runs pipelines on Groovy 2.4; tests must stay on the same line.
+      - dependency-name: "org.codehaus.groovy:groovy-all"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+  - package-ecosystem: maven
+    directory: /sample-app
+    schedule: { interval: weekly }
+  - package-ecosystem: docker
+    directories: [/sample-app, /tools]
+    schedule: { interval: weekly }
+    groups:
+      images: { patterns: ["*"] }
