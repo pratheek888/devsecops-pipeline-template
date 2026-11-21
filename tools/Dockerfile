@@ -7,7 +7,7 @@ FROM gcr.io/projectsigstore/cosign:v3.1.4 AS cosign
 FROM gcr.io/go-containerregistry/crane:v0.22.1 AS crane
 FROM mikefarah/yq:4.54.3 AS yq
 
-FROM alpine:3.22
+FROM alpine:3.24
 RUN apk add --no-cache bash ca-certificates git jq openssh-client \
  && adduser -D -u 1000 jenkins
 COPY --from=trivy    /usr/local/bin/trivy /usr/local/bin/trivy
