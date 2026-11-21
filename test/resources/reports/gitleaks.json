@@ -1,0 +1,3 @@
+[
+  {"Description": "AWS Access Key", "StartLine": 12, "EndLine": 12, "Match": "REDACTED", "Secret": "REDACTED", "File": "src/main/resources/application.properties", "Commit": "a1b2c3d4", "Author": "dev", "RuleID": "aws-access-token", "Fingerprint": "a1b2c3d4:src/main/resources/application.properties:aws-access-token:12"}
+]

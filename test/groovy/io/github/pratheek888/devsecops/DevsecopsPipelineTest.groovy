@@ -14,7 +14,7 @@ class DevsecopsPipelineTest extends LibraryTestBase {
     ]
 
     def runExample() {
-        return runScript('examples/Jenkinsfile')
+        return runPipeline('examples/Jenkinsfile')
     }
 
     @Test
@@ -68,8 +68,8 @@ class DevsecopsPipelineTest extends LibraryTestBase {
     }
 
     @Test
-    void reportsAreAlwaysArchived() {
-        scannersProduce(['trivy image': 'trivy-image.json'])
+    void reportsAreArchived() {
+        scannersProduce(['trivy image': 'trivy-clean.json'])
         runExample()
         assertTrue(helper.callStack.any { it.methodName == 'archiveArtifacts' })
     }

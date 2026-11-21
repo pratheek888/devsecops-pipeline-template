@@ -11,7 +11,7 @@ class StepsTest extends LibraryTestBase {
     def runStep(String body) {
         File script = new File(workspace, 'Jenkinsfile')
         script.text = "@Library('devsecops') _\n${body}\n"
-        return runScript(script.absolutePath)
+        return runPipeline(script.absolutePath)
     }
 
     @Test

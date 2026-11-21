@@ -53,7 +53,13 @@ abstract class LibraryTestBase extends DeclarativePipelineTest {
         helper.registerAllowedMethod('withSonarQubeEnv', [String, Closure]) { String s, Closure c -> c.call() }
         helper.registerAllowedMethod('waitForQualityGate', [Map]) { Map a -> [status: 'OK'] }
         helper.registerAllowedMethod('withVault', [Map, Closure]) { Map a, Closure c -> c.call() }
-        helper.registerAllowedMethod('usernamePassword', [Map]) { Map a -> a }
+        // Credentials bindings are exercised for real in the GitOps script test; here just run the body.
+        helper.registerAllowedMethod('withCredentials', [List, Closure]) { List l, Closure c -> c.call() }
+        // Like Jenkins: error() aborts the run (JenkinsPipelineUnit's default only sets the status).
+        helper.registerAllowedMethod('error', [String]) { String msg ->
+            updateBuildStatus('FAILURE')
+            throw new PipelineAborted(msg)
+        }
         helper.registerAllowedMethod('junit', [Map], null)
         helper.registerAllowedMethod('timestamps', [], null)
         helper.registerAllowedMethod('disableConcurrentBuilds', [], null)
@@ -79,7 +85,7 @@ abstract class LibraryTestBase extends DeclarativePipelineTest {
 
     /** Make the scanner steps "produce" these reports when their commands run. */
     void scannersProduce(Map<String, String> reports) {
-        helper.addShMock(~/(?s)(trivy fs|trivy image|gitleaks git).*/) { String script ->
+        helper.addShMock(~/(?s)(?:trivy fs|trivy image|gitleaks git).*/) { String script ->
             shell << script
             reports.each { String cmdPrefix, String fixture ->
                 if (script.startsWith(cmdPrefix)) {
@@ -92,7 +98,22 @@ abstract class LibraryTestBase extends DeclarativePipelineTest {
         }
     }
 
+    /** Run a pipeline script; an error() abort is recorded in the job status, like Jenkins does. */
+    def runPipeline(String path) {
+        try {
+            return runScript(path)
+        } catch (PipelineAborted ignored) {
+            return null
+        }
+    }
+
     boolean ranCommand(String prefix) {
         return shell.any { it.startsWith(prefix) }
+    }
+}
+
+class PipelineAborted extends RuntimeException {
+    PipelineAborted(String message) {
+        super(message)
     }
 }
