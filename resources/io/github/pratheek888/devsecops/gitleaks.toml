@@ -1,0 +1,15 @@
+# Default Gitleaks configuration: the upstream ruleset plus org-specific allowlists.
+# Used only when the repository has no .gitleaks.toml of its own.
+title = "devsecops-pipeline-template default"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Test fixtures and generated files"
+paths = [
+  '''(^|/)test/resources/''',
+  '''(^|/)src/test/''',
+  '''\.lock$''',
+  '''(^|/)reports/''',
+]

@@ -1,0 +1,24 @@
+// Jenkinsfile for a service using the devsecops shared library.
+// Register this repo in Manage Jenkins → System → Global Trusted Pipeline Libraries as "devsecops".
+@Library('devsecops') _
+
+devsecopsPipeline(
+    appName: 'payments-api',
+    registry: 'registry.example.com/team',
+    environment: 'prod',
+    sonar: [projectKey: 'payments-api'],
+    vault: [
+        url: 'https://vault.example.com',
+        credentialId: 'jenkins-vault-approle',
+        registrySecretPath: 'secret/ci/registry',
+        cosignKey: 'cosign'
+    ],
+    gitops: [
+        enabled: true,
+        repo: 'https://github.com/pratheek888/gitops-eks-reference.git',
+        valuesFile: 'environments/prod/values.yaml',
+        yamlPath: '.api.image.tag',
+        credentialsId: 'gitops-bot',
+        openPullRequest: true     // prod changes go through review; dev can push directly
+    ]
+)

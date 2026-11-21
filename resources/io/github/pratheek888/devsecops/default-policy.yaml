@@ -1,0 +1,40 @@
+# Organisation-wide default security policy.
+# Repositories can override parts of it in .security-policy.yaml (deep-merged; exceptions are appended).
+
+defaults:
+  secrets:
+    maxFindings: 0              # any committed secret fails the build
+  vulnerabilities:
+    failOn: [CRITICAL]          # fixable findings at these severities fail the build
+    warnOn: [HIGH]              # ...these mark it UNSTABLE
+    ignoreUnfixed: true         # no fix available yet → reported, not counted
+  misconfigurations:
+    failOn: [CRITICAL]          # Dockerfile / Kubernetes / Terraform checks
+  sast:
+    requireQualityGate: true    # SonarQube quality gate must be OK
+
+environments:
+  dev:
+    vulnerabilities:
+      failOn: [CRITICAL]
+      warnOn: [HIGH]
+  preprod:
+    vulnerabilities:
+      failOn: [CRITICAL, HIGH]
+      warnOn: [MEDIUM]
+  prod:
+    vulnerabilities:
+      failOn: [CRITICAL, HIGH]
+      warnOn: [MEDIUM]
+    misconfigurations:
+      failOn: [CRITICAL, HIGH]
+
+# Time-boxed risk acceptances. Each needs a reason, an approver and an expiry date (yyyy-mm-dd).
+# Expired exceptions stop applying automatically and are reported in the gate summary.
+exceptions: []
+#  - id: CVE-2025-12345
+#    package: libexample
+#    source: image            # optional: dependencies | image | gitleaks
+#    reason: "Not reachable: feature disabled; vendor fix due in 1.4.2"
+#    approvedBy: security-team
+#    expires: 2026-12-31

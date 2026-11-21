@@ -1,0 +1,8 @@
+@Library('devsecops') _
+
+devsecopsPipeline(
+    appName: 'hello-service',
+    registry: 'registry.example.com/demo',
+    environment: 'dev',
+    sonar: [enabled: false]
+)

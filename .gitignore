@@ -1,0 +1,7 @@
+.gradle/
+build/
+reports/
+image.tar
+sample-app/target/
+.idea/
+*.iml

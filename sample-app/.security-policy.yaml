@@ -1,0 +1,7 @@
+# Repo-level policy: deep-merged over the organisation defaults in the shared library.
+environments:
+  prod:
+    vulnerabilities:
+      failOn: [CRITICAL, HIGH]
+      warnOn: [MEDIUM, LOW]
+exceptions: []

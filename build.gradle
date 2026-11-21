@@ -1,0 +1,69 @@
+plugins {
+    id 'groovy'
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.jenkins-ci.org/public/' }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+// Jenkins shared library layout: src/ (classes), vars/ (steps, loaded by JenkinsPipelineUnit), resources/.
+// cli/ is a separate source set so Jenkins never sees its non-Jenkins dependencies.
+sourceSets {
+    main {
+        groovy { srcDirs = ['src'] }
+        resources { srcDirs = ['resources'] }
+    }
+    cli {
+        groovy { srcDirs = ['cli'] }
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+    test {
+        groovy { srcDirs = ['test/groovy'] }
+        resources { srcDirs = ['test/resources'] }
+    }
+}
+
+configurations {
+    cliImplementation.extendsFrom implementation
+    cliCompileOnly.extendsFrom compileOnly
+}
+
+dependencies {
+    // Same Groovy line Jenkins runs pipelines with.
+    implementation 'org.codehaus.groovy:groovy-all:2.4.21'
+    compileOnly 'com.cloudbees:groovy-cps:4348.ve8c60d51e508'   // @NonCPS
+
+    cliImplementation 'org.yaml:snakeyaml:2.3'
+
+    testImplementation 'com.lesfurets:jenkins-pipeline-unit:1.31'
+    testImplementation 'org.yaml:snakeyaml:2.3'
+    testImplementation 'com.cloudbees:groovy-cps:4348.ve8c60d51e508'
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.1.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.1.1'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat = 'full'
+        showStandardStreams = false
+    }
+}
+
+// Run the same policy engine outside Jenkins, e.g. in GitHub Actions:
+//   ./gradlew -q securityGate --args="--env prod --trivy reports/trivy-image.json --gitleaks reports/gitleaks.json"
+tasks.register('securityGate', JavaExec) {
+    group = 'verification'
+    description = 'Evaluate scanner reports against the security policy'
+    classpath = sourceSets.cli.runtimeClasspath
+    mainClass = 'io.github.pratheek888.devsecops.cli.GateCli'
+    workingDir = project.projectDir
+}
