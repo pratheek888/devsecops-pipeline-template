@@ -7,7 +7,7 @@ COPY src ./src
 RUN mvn -B -q package -DskipTests
 
 # Distroless: no shell, no package manager, small attack surface. Runs as non-root (uid 65532).
-FROM gcr.io/distroless/java21-debian12:nonroot
+FROM gcr.io/distroless/java21-debian13:nonroot
 COPY --from=build /src/target/app.jar /app/app.jar
 EXPOSE 8080
 USER nonroot
