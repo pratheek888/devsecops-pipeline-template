@@ -94,6 +94,11 @@ The same engine runs outside Jenkins:
 This repo's own CI runs the whole flow on GitHub Actions against [`sample-app/`](sample-app): real Gitleaks, Trivy and Syft
 scans, gated by the same policy engine.
 
+> **It caught a real issue on its first run.** The sample app started on `distroless/java21-debian12`, and the gate
+> failed the build on a **fixable CRITICAL** (`libbrotli1`, out-of-bounds write) plus 9 fixable HIGHs in `libexpat1`.
+> The fix was a patched base image (`java21-debian13`), not an exception, and the gate now passes with 0 CRITICAL.
+> That's the intended workflow: the gate points at the fix, and exceptions are for risks you choose to accept.
+
 ## Getting started
 
 1. **Register the library** in *Manage Jenkins → System → Global Trusted Pipeline Libraries*, with name `devsecops`
