@@ -3,11 +3,11 @@
 FROM aquasec/trivy:0.76.2 AS trivy
 FROM zricethezav/gitleaks:v8.30.1 AS gitleaks
 FROM anchore/syft:v1.57.2 AS syft
-FROM gcr.io/projectsigstore/cosign:v3.1.4 AS cosign
+FROM gcr.io/projectsigstore/cosign:v3.1.6 AS cosign
 FROM gcr.io/go-containerregistry/crane:v0.22.1 AS crane
 FROM mikefarah/yq:4.54.3 AS yq
 
-FROM alpine:3.22
+FROM alpine:3.24
 RUN apk add --no-cache bash ca-certificates git jq openssh-client \
  && adduser -D -u 1000 jenkins
 COPY --from=trivy    /usr/local/bin/trivy /usr/local/bin/trivy
